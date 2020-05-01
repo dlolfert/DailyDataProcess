@@ -9,4 +9,8 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Graph\DA\DA.csproj" />
+  </ItemGroup>
+
 </Project>

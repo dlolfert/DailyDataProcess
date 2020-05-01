@@ -6,7 +6,7 @@ namespace BarChart
 {
     class Program
     {
-        static private string cs = "Server=Nixon,1466;Database=Barchart;User Id=sa;Password=@a88word";
+        static private string _cs = "Server=Nixon,1466;Database=Barchart;User Id=sa;Password=@a88word";
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
@@ -85,7 +85,7 @@ namespace BarChart
                 using (SqlCommand comm = new SqlCommand())
                 {
                     using (SqlConnection conn =
-                        new SqlConnection(cs))
+                        new SqlConnection(_cs))
                     {
                         comm.CommandText = $"Select Count(1) from Top100 Where Symbol = '{symbol}'";
                         comm.Connection = conn;
@@ -110,7 +110,7 @@ namespace BarChart
                 using (SqlCommand comm = new SqlCommand())
                 {
                     using (SqlConnection conn =
-                        new SqlConnection(cs))
+                        new SqlConnection(_cs))
                     {
                         comm.CommandText = stmt;
                         comm.Connection = conn;

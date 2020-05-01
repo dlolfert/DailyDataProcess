@@ -7,7 +7,7 @@ namespace Zacks
 {
     class Program
     {
-        static private string cs = "Server=Nixon,1466;Database=Barchart;User Id=sa;Password=@a88word";
+        static private string _cs = "Server=Nixon,1466;Database=Barchart;User Id=sa;Password=@a88word";
         
 		static void Main(string[] args)
         {
@@ -16,7 +16,7 @@ namespace Zacks
             using (SqlCommand comm = new SqlCommand())
             {
                 using (SqlConnection conn =
-                    new SqlConnection(cs))
+                    new SqlConnection(_cs))
                 {
                     comm.CommandText = "Select Symbol From Top100";
                     comm.Connection = conn;
@@ -35,31 +35,31 @@ namespace Zacks
             //Console.ReadKey();
         }
 
-        static void UpdateZacksRank(string Symbol)
+        static void UpdateZacksRank(string symbol)
         {
-            if (!DoesZacksRankExistForToday(Symbol))
+            if (!DoesZacksRankExistForToday(symbol))
             {
                 try
                 {
-                    var wr = WebRequest.Create("https://www.zacks.com/stock/quote/" + Symbol);
+                    var wr = WebRequest.Create("https://www.zacks.com/stock/quote/" + symbol);
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     var resp = wr.GetResponse();
 
                     var sr = new StreamReader(resp.GetResponseStream());
 
                     string text = sr.ReadToEnd();
-                    int Rank = 6;
-                    if (text.Contains("1-Strong Buy")) Rank = 1;
-                    if (text.Contains("2-Buy")) Rank = 2;
-                    if (text.Contains("3-Hold")) Rank = 3;
-                    if (text.Contains("4-Sell")) Rank = 4;
-                    if (text.Contains("5-Strong Sell")) Rank = 5;
+                    int rank = 6;
+                    if (text.Contains("1-Strong Buy")) rank = 1;
+                    if (text.Contains("2-Buy")) rank = 2;
+                    if (text.Contains("3-Hold")) rank = 3;
+                    if (text.Contains("4-Sell")) rank = 4;
+                    if (text.Contains("5-Strong Sell")) rank = 5;
 
-                    char Momentum = 'F';
-                    if (text.Contains("<span class=\"composite_val\">A</span>&nbsp;Momentum ")) Momentum = 'A';
-                    if (text.Contains("<span class=\"composite_val\">B</span>&nbsp;Momentum")) Momentum = 'B';
-                    if (text.Contains("<span class=\"composite_val\">C</span>&nbsp;Momentum")) Momentum = 'C';
-                    if (text.Contains("<span class=\"composite_val\">D</span>&nbsp;Momentum")) Momentum = 'D';
+                    char momentum = 'F';
+                    if (text.Contains("<span class=\"composite_val\">A</span>&nbsp;Momentum ")) momentum = 'A';
+                    if (text.Contains("<span class=\"composite_val\">B</span>&nbsp;Momentum")) momentum = 'B';
+                    if (text.Contains("<span class=\"composite_val\">C</span>&nbsp;Momentum")) momentum = 'C';
+                    if (text.Contains("<span class=\"composite_val\">D</span>&nbsp;Momentum")) momentum = 'D';
 
                     #region close
                     string close = "0.00";
@@ -139,7 +139,7 @@ namespace Zacks
                     }
                     #endregion
 
-                    InsertZacksRating(Symbol, Rank, Momentum, dayhigh, open, close);
+                    InsertZacksRating(symbol, rank, momentum, dayhigh, open, close);
                 }
                 catch (Exception ex)
                 {
@@ -149,14 +149,14 @@ namespace Zacks
             //File.AppendAllText(@"C:\Temp\" + Symbol + ".htm", sr.ReadToEnd());
         }
 
-        static bool DoesZacksRankExistForToday(string Symbol)
+        static bool DoesZacksRankExistForToday(string symbol)
         {
             using (SqlCommand comm = new SqlCommand())
             {
-                using (SqlConnection conn = new SqlConnection(cs))
+                using (SqlConnection conn = new SqlConnection(_cs))
                 {
                     comm.CommandText =
-                        $"Select Count(1) From ZacksRank Where Symbol = '{Symbol}' And [Date] >= '{DateTime.Now.ToString("yyyy-MM-dd")}'";
+                        $"Select Count(1) From ZacksRank Where Symbol = '{symbol}' And [Date] >= '{DateTime.Now.ToString("yyyy-MM-dd")}'";
                     comm.Connection = conn;
                     conn.Open();
 
@@ -165,16 +165,16 @@ namespace Zacks
             }
         }
 
-        static void InsertZacksRating(string Symbol, int Rank, char Momentum, string dayHigh, string open, string close)
+        static void InsertZacksRating(string symbol, int rank, char momentum, string dayHigh, string open, string close)
         {
             try
             {
                 using (SqlCommand comm = new SqlCommand())
                 {
-                    using (SqlConnection conn = new SqlConnection(cs))
+                    using (SqlConnection conn = new SqlConnection(_cs))
                     {
                         comm.CommandText =
-                            $"Insert Into ZacksRank Values('{Symbol}', '{Rank}', '{DateTime.Now.ToString("yyyy-MM-dd")}', '{Momentum}', {dayHigh}, '{open}', '{close}')";
+                            $"Insert Into ZacksRank Values('{symbol}', '{rank}', '{DateTime.Now.ToString("yyyy-MM-dd")}', '{momentum}', {dayHigh}, '{open}', '{close}')";
                         comm.Connection = conn;
                         conn.Open();
 
