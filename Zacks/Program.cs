@@ -112,7 +112,7 @@ namespace Zacks
                     }
 
 
-                    #endregion
+                    #endregion 
 
                     #region day high
                     string dayhigh = "0.00";
@@ -174,7 +174,7 @@ namespace Zacks
                     using (SqlConnection conn = new SqlConnection(_cs))
                     {
                         comm.CommandText =
-                            $"Insert Into ZacksRank Values('{symbol}', '{rank}', '{DateTime.Now.ToString("yyyy-MM-dd")}', '{momentum}', {dayHigh}, '{open}', '{close}')";
+                            $"Insert Into ZacksRank Values('{symbol}', '{rank}', '{DateTime.Now.ToString("yyyy-MM-dd")}', '{momentum}', {dayHigh}, '{open}', '{close}', null, null)";
                         comm.Connection = conn;
                         conn.Open();
 
