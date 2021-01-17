@@ -10,7 +10,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Graph\DA\DA.csproj" />
+    <Reference Include="DA">
+      <HintPath>..\..\Graph\DA\bin\Debug\netstandard2.0\DA.dll</HintPath>
+    </Reference>
+    <Reference Include="DM">
+      <HintPath>..\..\Graph\DM\bin\Debug\netstandard2.0\DM.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -9,10 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yahoo", "Yahoo\Yahoo.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarChart", "BarChart\BarChart.csproj", "{3D2CADE1-51C6-477A-A09B-4B5FE1C25994}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DA", "..\Graph\DA\DA.csproj", "{5D95E304-2E2D-4475-9470-728D51368123}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DM", "..\Graph\DM\DM.csproj", "{157F561D-C7AF-4E39-835C-C6C99B24269C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,14 +27,6 @@ Global
 		{3D2CADE1-51C6-477A-A09B-4B5FE1C25994}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D2CADE1-51C6-477A-A09B-4B5FE1C25994}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D2CADE1-51C6-477A-A09B-4B5FE1C25994}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D95E304-2E2D-4475-9470-728D51368123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D95E304-2E2D-4475-9470-728D51368123}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D95E304-2E2D-4475-9470-728D51368123}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D95E304-2E2D-4475-9470-728D51368123}.Release|Any CPU.Build.0 = Release|Any CPU
-		{157F561D-C7AF-4E39-835C-C6C99B24269C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{157F561D-C7AF-4E39-835C-C6C99B24269C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{157F561D-C7AF-4E39-835C-C6C99B24269C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{157F561D-C7AF-4E39-835C-C6C99B24269C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
