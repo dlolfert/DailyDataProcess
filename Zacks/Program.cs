@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Data.SqlClient;
 using System.IO;
 using System.Net;
@@ -48,6 +49,20 @@ namespace Zacks
                     var sr = new StreamReader(resp.GetResponseStream());
 
                     string text = sr.ReadToEnd();
+                    
+                    text = text.Replace((char) '\n', ' ');
+                    text = text.Replace('\r', ' ');
+                    text = text.Replace("> <", "><");
+                    text = text.Replace(">  <", "><");
+                    text = text.Replace(">   <", "><");
+                    text = text.Replace(">    <", "><");
+                    text = text.Replace(">     <", "><");
+                    text = text.Replace(">      <", "><");
+                    text = text.Replace(">       <", "><");
+                    text = text.Replace(">        <", "><");
+                    text = text.Replace(">         <", "><");
+                    text = text.Replace(">          <", "><");
+
                     int rank = 6;
                     if (text.Contains("1-Strong Buy")) rank = 1;
                     if (text.Contains("2-Buy")) rank = 2;
@@ -91,13 +106,13 @@ namespace Zacks
                     string open = "0.00";
                     try
                     {
-                        if (text.Contains("class=\"alpha\">Open</td>"))
+                        if (text.Contains("Open</dt><dd>"))
                         {
-                            int index = text.IndexOf(">Open</td>",
+                            int index = text.IndexOf("Open</dt><dd>",
                                 StringComparison.InvariantCulture);
 
-                            open = text.Substring(index + 35, 20);
-                            index = open.IndexOf("</td>", StringComparison.InvariantCulture);
+                            open = text.Substring(index + 13, 20);
+                            index = open.IndexOf("</dd>", StringComparison.InvariantCulture);
                             open = open.Substring(0, index);
                             decimal dclose;
                             if (!Decimal.TryParse(open, out dclose))
@@ -118,13 +133,13 @@ namespace Zacks
                     string dayhigh = "0.00";
                     try
                     {
-                        if (text.Contains("class=\"alpha\">Day High</td>"))
+                        if (text.Contains("Day High</dt><dd>"))
                         {
-                            int index = text.IndexOf(">Day High</td>",
+                            int index = text.IndexOf("Day High</dt><dd>",
                                 StringComparison.InvariantCulture);
 
-                            dayhigh = text.Substring(index + 39, 20);
-                            index = dayhigh.IndexOf("</td>", StringComparison.InvariantCulture);
+                            dayhigh = text.Substring(index + 17, 20);
+                            index = dayhigh.IndexOf("</dd>", StringComparison.InvariantCulture);
                             dayhigh = dayhigh.Substring(0, index);
                             decimal dclose;
                             if (!Decimal.TryParse(dayhigh, out dclose))
@@ -139,7 +154,61 @@ namespace Zacks
                     }
                     #endregion
 
-                    InsertZacksRating(symbol, rank, momentum, dayhigh, open, close);
+                    #region day low
+
+                    string daylow = "0.00";
+                    try
+                    {
+                        if (text.Contains("Day Low</dt><dd>"))
+                        {
+                            int index = text.IndexOf("Day Low</dt><dd>",
+                                StringComparison.InvariantCulture);
+
+                            daylow = text.Substring(index + 16, 20);
+                            index = daylow.IndexOf("</dd>", StringComparison.InvariantCulture);
+                            daylow = daylow.Substring(0, index);
+                            decimal ddaylow;
+                            if (!Decimal.TryParse(daylow, out ddaylow))
+                            {
+                                daylow = "0.00";
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    #endregion
+
+                    #region volume
+                    //volume" class="hide">
+                    string volume = "0.00";
+                    try
+                    {
+                        if (text.Contains("volume\" class=\"hide\">"))
+                        {
+                            int index = text.IndexOf("volume\" class=\"hide\">",
+                                StringComparison.InvariantCulture);
+
+                            volume = text.Substring(index + 21, 20);
+                            index = volume.IndexOf("</div>", StringComparison.InvariantCulture);
+                            volume = volume.Substring(0, index);
+                            volume = volume.Replace(",", "");
+
+                            decimal dvolume;
+                            if (!Decimal.TryParse(volume, out dvolume))
+                            {
+                                volume = "0.00";
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    #endregion
+
+                    InsertZacksRating(symbol, rank, momentum, dayhigh, open, close, daylow, volume);
                 }
                 catch (Exception ex)
                 {
@@ -165,7 +234,7 @@ namespace Zacks
             }
         }
 
-        static void InsertZacksRating(string symbol, int rank, char momentum, string dayHigh, string open, string close)
+        static void InsertZacksRating(string symbol, int rank, char momentum, string dayHigh, string open, string close, string daylow, string volume)
         {
             try
             {
@@ -174,7 +243,7 @@ namespace Zacks
                     using (SqlConnection conn = new SqlConnection(_cs))
                     {
                         comm.CommandText =
-                            $"Insert Into ZacksRank Values('{symbol}', '{rank}', '{DateTime.Now.ToString("yyyy-MM-dd")}', '{momentum}', {dayHigh}, '{open}', '{close}', null, null)";
+                            $"Insert Into ZacksRank Values('{symbol}', '{rank}', '{DateTime.Now.ToString("yyyy-MM-dd")}', '{momentum}', {dayHigh}, '{open}', '{close}', '{daylow}', '{volume}')";
                         comm.Connection = conn;
                         conn.Open();
 
